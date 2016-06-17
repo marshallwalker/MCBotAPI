@@ -1,8 +1,7 @@
 package ca.pureplugins.mcbotapi.interfaces;
 
+import org.spacehq.mc.protocol.data.game.entity.metadata.Position;
 import org.spacehq.mc.protocol.data.game.entity.player.Hand;
-
-import ca.pureplugins.mcbotapi.model.Location;
 
 public abstract interface AI
 {
@@ -14,17 +13,25 @@ public abstract interface AI
 
 	void jump();
 
-	void switchSlot(int slot);
+	void switchToSlot(int slot);
 
 	void panic();
 
-	void move(Location location);
+	void move(Position position);
 
-	void sneak(boolean sneak);
+	void setSneaking(boolean sneak);
 
-	void sprint(boolean sprint);
+	void setSprinting(boolean sprint);
 
 	void swingHand(Hand hand);
 
-	void useItem(Hand hand);
+	void useItemInHand(Hand hand);
+
+	void turn(int degrees);
+
+	void derp();
+
+	void dropItemInSlot(int slot);
+
+	void dropInventory();
 }

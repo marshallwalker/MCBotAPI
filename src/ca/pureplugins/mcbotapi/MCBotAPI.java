@@ -1,24 +1,57 @@
 package ca.pureplugins.mcbotapi;
 
+import java.util.Random;
+
+import org.spacehq.mc.protocol.data.game.entity.player.Hand;
+
+import ca.pureplugins.mcbotapi.event.BotChatEvent;
 import ca.pureplugins.mcbotapi.event.BotJoinEvent;
-import ca.pureplugins.mcbotapi.impl.BotImpl;
-import ca.pureplugins.mcbotapi.interfaces.Bot;
 import ca.pureplugins.mcbotapi.model.Account;
 import ca.pureplugins.mcbotapi.model.Server;
 
 public class MCBotAPI
 {
-	private static final String USERNAME = "black0psaddict@hotmail.com";
-	private static final String PASSWORD = "tomboy16";
-
 	public static void main(String[] args)
 	{
-		Bot bot = new BotImpl(new Account(USERNAME, PASSWORD), new Server("play.rebirthcraft.net", 25565));
-		bot.login();
+		BotSession session = new BotSession(new Server("localhost", 25566));
 
-		bot.getEventBus().register(BotJoinEvent.class, event ->
+		session.addAccount(new Account("thomas.ziel1@web.de", "03111995"));
+
+		session.start();
+
+		session.getEventBus().register(BotJoinEvent.class, event ->
 		{
-			System.out.println(event.getBot().getAccount().getUsername() + " has joined " + event.getBot().getServer().getHostname());
+			System.out.println(event.getBot().getAccount().getUsername() + " has joined " + session.getServer().getHostname());
+		});
+
+		session.getEventBus().register(BotChatEvent.class, event ->
+		{
+			String message = event.getMessage().getFullText();
+
+			if (message.contains(".swing"))
+			{
+				session.getBots().forEach(bot -> bot.getAI().swingHand(Hand.MAIN_HAND));
+			}
+
+			if (message.contains(".jump"))
+			{
+				session.getBots().forEach(bot -> bot.getAI().jump());
+			}
+
+			if (message.contains(".derp"))
+			{
+				session.getBots().forEach(bot -> bot.getAI().derp());
+			}
+
+			if (message.contains(".turn"))
+			{
+				event.getBot().getAI().turn(new Random().nextInt(120));
+			}
+
+			if (message.contains(".panic"))
+			{
+				event.getBot().getAI().panic();
+			}
 		});
 	}
 }
